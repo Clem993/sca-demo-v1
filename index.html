@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excelra SCA Platform — Nucala COPD / MATINEE</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:    #ffffff;
+  --bg:       #f7f8fa;
+  --bg2:      #f0f2f5;
+  --line:     #e5e8ee;
+  --line2:    #d1d6e0;
+  --text:     #0c1220;
+  --sub:      #2e3a4e;
+  --muted:    #64748b;
+  --faint:    #94a3b8;
+  --navy:     #004c97;
+  --navy-d:   #00377a;
+  --navy-lt:  #f0f5ff;
+  --navy-bd:  #c7d9f5;
+  --teal:     #0d9488;
+  --teal-lt:  #f0fdfa;
+  --teal-bd:  #99f6e4;
+  --green:    #16a34a;
+  --green-lt: #f0fdf4;
+  --green-bd: #bbf7d0;
+  --amber:    #92400e;
+  --amber-lt: #fffbeb;
+  --amber-bd: #fde68a;
+  --red:      #b91c1c;
+  --red-lt:   #fff1f2;
+  --red-bd:   #fecdd3;
+  --sb-w: 220px;
+  --bar-h: 52px;
+  --sans: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r: 8px;
+  --r-sm: 5px;
+  --sh: 0 1px 2px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04);
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 13px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+
+/* ─── APP SHELL ─── */
+.app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* ─── TOPBAR ─── */
+.topbar {
+  height: var(--bar-h); display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; background: var(--white); border-bottom: 1px solid var(--line);
+  flex-shrink: 0; z-index: 30;
+}
+.top-brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  display: flex; align-items: center; gap: 8px;
+}
+.brand-sq {
+  width: 30px; height: 30px; background: var(--navy); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.brand-sq svg { display: block; }
+.brand-text { display: flex; flex-direction: column; gap: 1px; }
+.brand-name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--text); line-height: 1; }
+.brand-sub  { font-size: 10.5px; color: var(--muted); line-height: 1; }
+.top-divider { width: 1px; height: 18px; background: var(--line2); }
+.top-context {
+  display: flex; align-items: center; gap: 8px; font-size: 12px;
+}
+.ctx-label { color: var(--muted); }
+.ctx-val   { color: var(--sub); font-weight: 500; }
+.ctx-sep   { color: var(--line2); }
+.top-badges { display: flex; align-items: center; gap: 6px; }
+.tbadge {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; border: 1px solid; font-weight: 500;
+}
+.tb-g { background: var(--green-lt); color: var(--green); border-color: var(--green-bd); }
+.tb-b { background: var(--navy-lt);  color: var(--navy);  border-color: var(--navy-bd); }
+.tb-a { background: var(--amber-lt); color: var(--amber); border-color: var(--amber-bd); }
+
+/* ─── BODY ─── */
+.body { display: flex; flex: 1; overflow: hidden; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: var(--sb-w); flex-shrink: 0; background: var(--white);
+  border-right: 1px solid var(--line); display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar { display: none; }
+
+.sb-group { padding: 20px 14px 10px; }
+.sb-heading {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--faint); padding: 0 6px; margin-bottom: 6px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 9px; padding: 7px 6px;
+  border-radius: var(--r-sm); cursor: pointer; margin-bottom: 1px;
+  transition: background .12s;
+}
+.nav-item:hover:not(.active) { background: var(--bg); }
+.nav-item.active { background: var(--navy-lt); }
+
+.nav-step {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; display: flex;
+  align-items: center; justify-content: center;
+  border: 1.5px solid var(--line2); background: var(--white);
+}
+.nav-step svg { display: block; }
+.nav-item.active .nav-step { border-color: var(--navy); background: var(--navy); }
+.nav-item.active .nav-step svg .step-icon { stroke: white; }
+.nav-item.done   .nav-step { border-color: var(--green-bd); background: var(--green-lt); }
+.nav-item.done   .nav-step svg .step-icon { stroke: var(--green); }
+
+.nav-text { flex: 1; font-size: 12px; color: var(--muted); }
+.nav-item.active .nav-text { color: var(--navy); font-weight: 500; }
+.nav-item.done   .nav-text { color: var(--muted); }
+
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.nav-dot.live { background: var(--navy); }
+.nav-dot.done { background: var(--green); }
+.nav-dot.idle { background: var(--line2); }
+
+.sb-rule { height: 1px; background: var(--line); margin: 4px 14px; }
+
+.sb-meta { padding: 14px 20px; }
+.sb-meta-row { margin-bottom: 12px; }
+.sb-meta-key {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 3px;
+}
+.sb-meta-val { font-size: 12px; color: var(--sub); font-weight: 500; }
+.sb-meta-val.mono { font-family: var(--mono); font-size: 10.5px; color: var(--muted); font-weight: 400; letter-spacing: .02em; }
+
+.sb-progress-wrap { margin-top: 10px; }
+.sb-progress-label { font-size: 11.5px; color: var(--sub); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.sb-progress-label span { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.sb-progress-track { height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.sb-progress-fill  { height: 100%; background: var(--navy); border-radius: 2px; transition: width .5s cubic-bezier(.4,0,.2,1); width: 0%; }
+
+/* ─── WORKSPACE ─── */
+.workspace { flex: 1; overflow: hidden; display: flex; }
+
+.pane {
+  display: none; width: 100%; height: 100%; overflow-y: auto; padding: 32px 36px 72px;
+  scrollbar-width: thin; scrollbar-color: var(--line2) transparent;
+}
+.pane.active { display: block; }
+.pane.entering { animation: paneIn .2s ease both; }
+@keyframes paneIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
+
+/* ─── PANE HEADER ─── */
+.pane-top { margin-bottom: 28px; }
+.pane-step {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+}
+.pane-step::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.pane-h1 { font-size: 22px; font-weight: 600; letter-spacing: -.025em; color: var(--text); margin-bottom: 6px; line-height: 1.2; }
+.pane-desc { font-size: 13px; color: var(--muted); line-height: 1.65; max-width: 660px; }
+
+/* ─── CARD ─── */
+.card {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--sh); overflow: hidden; margin-bottom: 14px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px; border-bottom: 1px solid var(--line);
+}
+.card-header-left { display: flex; align-items: baseline; gap: 10px; }
+.card-title    { font-size: 13px; font-weight: 600; color: var(--text); }
+.card-subtitle { font-size: 11.5px; color: var(--muted); font-weight: 400; }
+.card-body { padding: 18px; }
+
+/* ─── BADGE ─── */
+.badge {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .07em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; border: 1px solid; font-weight: 500; white-space: nowrap; display: inline-block;
+}
+.b-navy  { background: var(--navy-lt);  color: var(--navy);  border-color: var(--navy-bd); }
+.b-green { background: var(--green-lt); color: var(--green); border-color: var(--green-bd); }
+.b-amber { background: var(--amber-lt); color: var(--amber); border-color: var(--amber-bd); }
+.b-red   { background: var(--red-lt);   color: var(--red);   border-color: var(--red-bd); }
+.b-muted { background: var(--bg);       color: var(--muted); border-color: var(--line2); }
+.b-teal  { background: var(--teal-lt);  color: var(--teal);  border-color: var(--teal-bd); }
+
+/* ─── TABLE ─── */
+.dtable { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.dtable thead tr { background: var(--bg); }
+.dtable th {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--faint); text-align: left; padding: 9px 16px; border-bottom: 1px solid var(--line); font-weight: 500;
+}
+.dtable td { padding: 11px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.dtable tr:last-child td { border-bottom: none; }
+.dtable tbody tr:hover { background: var(--bg); }
+.dn  { font-weight: 500; color: var(--text); font-size: 12.5px; }
+.ds  { font-family: var(--mono); font-size: 9.5px; color: var(--faint); margin-top: 2px; }
+.mc  { font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+.vt  { font-family: var(--mono); font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 4px; display: inline-block; }
+.vt-ok   { background: var(--green-lt); color: var(--green); }
+.vt-warn { background: var(--amber-lt); color: var(--amber); }
+.vt-err  { background: var(--red-lt);   color: var(--red);   }
+.st-ok   { font-family: var(--mono); font-size: 10.5px; color: var(--green); }
+.st-warn { font-family: var(--mono); font-size: 10.5px; color: var(--amber); }
+.st-err  { font-family: var(--mono); font-size: 10.5px; color: var(--red);   }
+
+/* ─── NOTICE BARS ─── */
+.notice {
+  display: flex; gap: 14px; padding: 14px 18px; border-radius: var(--r);
+  border: 1px solid; margin-bottom: 14px;
+}
+.notice-icon { flex-shrink: 0; padding-top: 1px; }
+.notice-icon svg { display: block; }
+.notice-title { font-size: 12.5px; font-weight: 600; margin-bottom: 3px; }
+.notice-text  { font-size: 12px; line-height: 1.6; }
+.notice-text strong { font-weight: 600; }
+.notice.n-red   { background: var(--red-lt);   border-color: var(--red-bd); }
+.notice.n-red   .notice-title { color: var(--red); }
+.notice.n-red   .notice-text  { color: #7f1d1d; }
+.notice.n-navy  { background: var(--navy-lt);  border-color: var(--navy-bd); }
+.notice.n-navy  .notice-title { color: var(--navy); }
+.notice.n-navy  .notice-text  { color: #1e3a5f; }
+.notice.n-green { background: var(--green-lt); border-color: var(--green-bd); }
+.notice.n-green .notice-title { color: var(--green); }
+.notice.n-green .notice-text  { color: #14532d; }
+.notice.n-teal  { background: var(--teal-lt);  border-color: var(--teal-bd); }
+.notice.n-teal  .notice-title { color: var(--teal); }
+.notice.n-teal  .notice-text  { color: #134e4a; }
+.notice.n-amber { background: var(--amber-lt); border-color: var(--amber-bd); }
+.notice.n-amber .notice-title { color: var(--amber); }
+.notice.n-amber .notice-text  { color: #78350f; }
+
+/* ─── FORM ELEMENTS ─── */
+.field-group { margin-bottom: 18px; }
+.field-label {
+  font-size: 12px; font-weight: 500; color: var(--sub); margin-bottom: 7px;
+  display: flex; align-items: center; gap: 8px;
+}
+.field-label-mono { font-family: var(--mono); font-size: 10px; color: var(--muted); font-weight: 400; }
+
+.locked-field {
+  display: flex; align-items: center; gap: 10px; padding: 9px 13px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm);
+  font-size: 12.5px; color: var(--sub); margin-bottom: 7px;
+}
+.locked-field:last-child { margin-bottom: 0; }
+.lf-icon { flex-shrink: 0; opacity: .4; }
+.lf-icon svg { display: block; }
+.lf-val  { font-weight: 500; color: var(--text); flex: 1; }
+.lf-src  { font-family: var(--mono); font-size: 9.5px; color: var(--faint); }
+
+.open-field-wrap {
+  border: 1px solid var(--navy-bd); border-radius: var(--r-sm); overflow: hidden;
+  background: var(--navy-lt);
+}
+.open-field-bar {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  background: var(--white); border-bottom: 1px solid var(--navy-bd);
+}
+.open-field-bar-label { font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--navy); font-weight: 500; flex: 1; }
+
+.field-textarea {
+  width: 100%; padding: 11px 14px; min-height: 90px; resize: vertical;
+  border: none; background: transparent;
+  font-family: var(--sans); font-size: 13px; color: var(--text);
+  line-height: 1.6; outline: none; display: block;
+}
+.field-textarea::placeholder { color: var(--faint); font-style: italic; }
+.field-footer {
+  display: flex; justify-content: flex-end; padding: 6px 12px;
+  border-top: 1px solid var(--navy-bd); background: var(--white);
+}
+.field-char { font-family: var(--mono); font-size: 9.5px; color: var(--faint); }
+
+/* ─── VALIDATION RULES ─── */
+.rules-grid { display: flex; flex-direction: column; gap: 5px; }
+.rule-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--white); transition: all .25s;
+}
+.rule-row.pass { border-color: var(--green-bd); background: var(--green-lt); }
+.rule-row.fail { border-color: var(--red-bd);   background: var(--red-lt); }
+.rule-indicator {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: var(--line2); transition: background .25s;
+}
+.rule-row.pass .rule-indicator { background: var(--green); }
+.rule-row.fail .rule-indicator { background: var(--red); }
+.rule-label { font-size: 12px; color: var(--sub); flex: 1; transition: color .25s; }
+.rule-row.pass .rule-label { color: var(--green); }
+.rule-row.fail .rule-label { color: var(--red); }
+.rule-result { font-family: var(--mono); font-size: 10px; color: var(--faint); transition: color .25s; }
+.rule-row.pass .rule-result { color: var(--green); font-weight: 500; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; font-family: var(--sans); font-size: 12.5px;
+  font-weight: 500; padding: 9px 18px; border-radius: var(--r-sm); cursor: pointer;
+  transition: all .12s; border: none; outline: none; white-space: nowrap; letter-spacing: -.01em;
+}
+.btn-navy  { background: var(--navy);  color: white; }
+.btn-navy:hover:not(:disabled)  { background: var(--navy-d); }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover:not(:disabled) { background: #15803d; }
+.btn-ghost { background: transparent; color: var(--sub); border: 1px solid var(--line2); }
+.btn-ghost:hover:not(:disabled) { background: var(--bg); }
+.btn:disabled { opacity: .3; cursor: not-allowed; }
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+.btn-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+
+/* ─── APPROVAL CARDS ─── */
+.ap-card {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--sh); margin-bottom: 10px; overflow: hidden;
+  transition: border-color .2s;
+}
+.ap-card.ap-current  { border-color: var(--navy-bd); }
+.ap-card.ap-approved { border-color: var(--green-bd); }
+
+.ap-head {
+  display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+}
+.ap-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  border: 1px solid var(--line); background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .03em;
+  transition: all .2s;
+}
+.ap-card.ap-current  .ap-avatar { background: var(--navy-lt); border-color: var(--navy-bd); color: var(--navy); }
+.ap-card.ap-approved .ap-avatar { background: var(--green-lt); border-color: var(--green-bd); }
+
+.ap-info { flex: 1; }
+.ap-role { font-size: 13px; font-weight: 600; color: var(--text); }
+.ap-desc { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+.ap-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.ap-time { font-family: var(--mono); font-size: 10px; color: var(--faint); }
+
+.ap-body { padding: 0 18px 14px 68px; }
+.ap-review-note {
+  font-size: 12px; line-height: 1.6; color: var(--muted); padding: 10px 14px;
+  background: var(--bg); border-radius: var(--r-sm); border: 1px solid var(--line);
+  margin-bottom: 10px;
+}
+.ap-actions { display: flex; gap: 8px; }
+
+/* ─── COMPONENT RECORD ─── */
+.comp-card {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--sh); overflow: hidden;
+}
+.comp-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--line);
+  background: var(--green-lt);
+}
+.comp-card-id { font-family: var(--mono); font-size: 12.5px; font-weight: 500; color: var(--green); letter-spacing: .02em; }
+.comp-card-sub { font-family: var(--mono); font-size: 9px; color: #4ade80; margin-top: 2px; letter-spacing: .06em; text-transform: uppercase; }
+.comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.comp-cell {
+  padding: 11px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.comp-cell:nth-child(3n)    { border-right: none; }
+.comp-cell:nth-last-child(-n+3) { border-bottom: none; }
+.comp-cell.flash { animation: cellFlash .55s ease both; }
+.comp-key { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
+.comp-val { font-size: 12px; color: var(--text); }
+.comp-val.empty  { color: var(--faint); font-style: italic; }
+.comp-val.filled { animation: fadeUp .35s ease both; }
+
+.comp-content-area { padding: 16px 18px; border-top: 1px solid var(--line); background: var(--bg); }
+.comp-content-key { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.comp-content-text {
+  font-size: 13px; line-height: 1.65; color: var(--text); font-style: italic; padding: 12px 16px;
+  background: var(--white); border-radius: var(--r-sm); border: 1px solid var(--line);
+  border-left: 3px solid var(--green); min-height: 44px;
+}
+.comp-content-text.empty { color: var(--faint); border-left-color: var(--line2); }
+
+@keyframes cellFlash { 0%{background:var(--green-lt)} 100%{background:transparent} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+
+/* ─── REUSE ROWS ─── */
+.reuse-card {
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--sh); overflow: hidden; margin-bottom: 10px;
+}
+.reuse-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 16px; border-bottom: 1px solid var(--line);
+}
+.reuse-doc-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.reuse-section  { font-family: var(--mono); font-size: 9.5px; color: var(--muted); letter-spacing: .03em; }
+.reuse-body  { padding: 12px 16px; font-size: 12.5px; line-height: 1.65; color: var(--sub); }
+.reuse-hi    { color: var(--green); font-weight: 600; }
+.reuse-lock  { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-family: var(--mono); font-size: 9.5px; color: var(--faint); }
+.reuse-lock svg { display: block; flex-shrink: 0; }
+
+/* ─── CONSISTENCY ROWS ─── */
+.con-row {
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+  background: var(--white); border: 1px solid var(--line); border-radius: var(--r-sm);
+  margin-bottom: 6px; box-shadow: var(--sh); font-size: 12.5px;
+}
+.con-icon { flex-shrink: 0; }
+.con-icon svg { display: block; }
+.con-doc { flex: 1; color: var(--text); }
+.con-val { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--green); min-width: 88px; text-align: right; }
+.con-st  { font-family: var(--mono); font-size: 9.5px; color: var(--faint); min-width: 180px; text-align: right; }
+
+/* ─── STAT CARDS ─── */
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.stat-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px; box-shadow: var(--sh); }
+.stat-num  { font-size: 38px; font-weight: 700; letter-spacing: -.04em; line-height: 1; margin-bottom: 4px; }
+.stat-label{ font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+/* ─── COMPARE GRID ─── */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.compare-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
+.compare-head { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+.compare-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.compare-item { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; line-height: 1.55; color: var(--sub); }
+.compare-item svg { flex-shrink: 0; margin-top: 2px; display: block; }
+
+/* ─── CODE BLOCK ─── */
+.code-block {
+  background: #0d1117; border: 1px solid #21262d; border-radius: var(--r);
+  padding: 16px 18px; font-family: var(--mono); font-size: 10.5px; line-height: 1.8; overflow-x: auto;
+}
+.ct { color: #79c0ff; } .ca { color: #7ee787; } .cv { color: #ffa198; } .cc { color: #484f58; font-style: italic; } .cx { color: #8b949e; }
+
+/* ─── UTILITY ─── */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em; padding: 4px 10px;
+  border-radius: 4px; border: 1px solid var(--line2); color: var(--muted); background: var(--white);
+}
+.divider { height: 1px; background: var(--line); margin: 20px 0; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 4px; }
+</style>
+<style>
+/* ─── PASSWORD GATE ─── */
+.pw-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:#f7f8fa;font-family:'Inter',sans-serif;}
+.pw-gate.hidden{display:none}
+.pw-box{width:360px;background:#fff;border-radius:12px;padding:40px 32px 32px;box-shadow:0 4px 24px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);text-align:center;}
+.pw-box .pw-lock{width:48px;height:48px;margin:0 auto 16px;background:#f0f5ff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#004c97;font-size:22px;}
+.pw-box h2{font-size:18px;font-weight:600;color:#0c1220;margin-bottom:4px;}
+.pw-box p{font-size:13px;color:#64748b;margin-bottom:24px;}
+.pw-box input{width:100%;padding:10px 14px;border:1px solid #d1d6e0;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .15s;}
+.pw-box input:focus{border-color:#004c97;box-shadow:0 0 0 3px rgba(0,76,151,.12);}
+.pw-box button{width:100%;margin-top:12px;padding:10px;background:#004c97;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s;}
+.pw-box button:hover{background:#00377a;}
+.pw-err{color:#b91c1c;font-size:12px;margin-top:8px;display:none;}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div class="pw-gate" id="pwGate">
+  <div class="pw-box">
+    <div class="pw-lock">&#128274;</div>
+    <h2>Excelra SCA Platform</h2>
+    <p>Enter the password to continue</p>
+    <form id="pwForm">
+      <input type="password" id="pwInput" placeholder="Password" autofocus autocomplete="off">
+      <button type="submit">Unlock</button>
+      <div class="pw-err" id="pwErr">Incorrect password. Please try again.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+// SHA-256 hash of the password — change the hash to change the password.
+// Current password: "excelra2026"
+// To change: generate a new hash at any SHA-256 tool online.
+const PW_HASH='9a809130ac3ea664da5ca37d5a1ed0e3a3e83532c3190e82c947ae1808ecd7bc';
+async function sha256(s){const d=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+document.getElementById('pwForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const v=document.getElementById('pwInput').value;
+  const h=await sha256(v);
+  if(h===PW_HASH){
+    document.getElementById('pwGate').classList.add('hidden');
+    document.querySelector('.app').style.display='';
+    sessionStorage.setItem('pw_ok','1');
+  } else {
+    document.getElementById('pwErr').style.display='block';
+    document.getElementById('pwInput').value='';
+  }
+});
+// Remember unlock for current tab session
+if(sessionStorage.getItem('pw_ok')==='1'){
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('pwGate').classList.add('hidden');
+    document.querySelector('.app').style.display='';
+  });
+}
+</script>
+
+<div class="app" style="display:none">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="top-brand">
+    <div class="brand-mark">
+      <div class="brand-sq">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="white" opacity=".9"/><rect x="9" y="2" width="5" height="5" rx="1" fill="white" opacity=".6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="white" opacity=".6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="white" opacity=".3"/></svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">Excelra SCA</div>
+        <div class="brand-sub">Structured Component Authoring</div>
+      </div>
+    </div>
+    <div class="top-divider"></div>
+    <div class="top-context">
+      <span class="ctx-label">Programme</span>
+      <span class="ctx-val">Nucala (mepolizumab) · COPD</span>
+      <span class="ctx-sep">·</span>
+      <span class="ctx-label">Trial</span>
+      <span class="ctx-val">MATINEE · MEP-COPD-301</span>
+    </div>
+  </div>
+  <div class="top-badges">
+    <span class="tbadge tb-b">eCTD 4.0</span>
+    <span class="tbadge tb-g">21 CFR Part 11</span>
+    <span class="tbadge tb-a">Proof of Concept</span>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-group">
+    <div class="sb-heading">Workflow</div>
+
+
+    <div class="nav-item active" id="nav-0" onclick="goPane(0)">
+      <div class="nav-step" id="nstep-0">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">ICH M11 shell</div>
+      <div class="nav-dot live" id="ndot-0"></div>
+    </div>
+    <div class="nav-item" id="nav-1" onclick="goPane(1)">
+      <div class="nav-step" id="nstep-1">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">Author endpoint</div>
+      <div class="nav-dot idle" id="ndot-1"></div>
+    </div>
+    <div class="nav-item" id="nav-2" onclick="goPane(2)">
+      <div class="nav-step" id="nstep-2">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">Review &amp; approve</div>
+      <div class="nav-dot idle" id="ndot-2"></div>
+    </div>
+    <div class="nav-item" id="nav-3" onclick="goPane(3)">
+      <div class="nav-step" id="nstep-3">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">Component record</div>
+      <div class="nav-dot idle" id="ndot-3"></div>
+    </div>
+    <div class="nav-item" id="nav-4" onclick="goPane(4)">
+      <div class="nav-step" id="nstep-4">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">Cross-domain reuse</div>
+      <div class="nav-dot idle" id="ndot-4"></div>
+    </div>
+    <div class="nav-item" id="nav-5" onclick="goPane(5)">
+      <div class="nav-step" id="nstep-5">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">Consistency check</div>
+      <div class="nav-dot idle" id="ndot-5"></div>
+    </div>
+    <div class="nav-item" id="nav-6" onclick="goPane(6)">
+      <div class="nav-step" id="nstep-6">
+        <svg width="10" height="10" viewBox="0 0 10 10"><circle class="step-icon" cx="5" cy="5" r="3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <div class="nav-text">Summary</div>
+      <div class="nav-dot idle" id="ndot-6"></div>
+    </div>
+  </div>
+
+  <div class="sb-rule"></div>
+
+  <div class="sb-group">
+    <div class="sb-heading">Component</div>
+    <div style="padding: 0 6px;">
+      <div class="sb-meta-row">
+        <div class="sb-meta-key">ID</div>
+        <div class="sb-meta-val mono">CMP-2025-PE-00412</div>
+      </div>
+      <div class="sb-meta-row">
+        <div class="sb-meta-key">Status</div>
+        <div class="sb-meta-val" id="sb-status" style="color: var(--muted);">Not yet authored</div>
+      </div>
+      <div class="sb-progress-wrap">
+        <div class="sb-progress-label">
+          Progress
+          <span id="sb-pct-label">0%</span>
+        </div>
+        <div class="sb-progress-track">
+          <div class="sb-progress-fill" id="sb-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-rule"></div>
+
+  <div class="sb-group">
+    <div class="sb-heading">Context</div>
+    <div style="padding: 0 6px; display: flex; flex-direction: column; gap: 10px;">
+      <div class="sb-meta-row" style="margin-bottom:0;"><div class="sb-meta-key">Drug</div><div class="sb-meta-val">Mepolizumab (Nucala)</div></div>
+      <div class="sb-meta-row" style="margin-bottom:0;"><div class="sb-meta-key">Indication</div><div class="sb-meta-val">COPD</div></div>
+      <div class="sb-meta-row" style="margin-bottom:0;"><div class="sb-meta-key">BLA</div><div class="sb-meta-val">761122</div></div>
+      <div class="sb-meta-row" style="margin-bottom:0;"><div class="sb-meta-key">Platform</div><div class="sb-meta-val" style="font-weight:400;color:var(--muted);">Eagle · CMC-Digital · Sonata</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace">
+
+<!-- PANE 1 — SHELL -->
+<div class="pane active" id="pane-0">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--navy);">Step 1 of 6 — Template shell</div>
+    <div class="pane-h1">ICH M11 protocol shell instantiated</div>
+    <div class="pane-desc">Before any clinical content is written, SCA instantiates a governed protocol shell derived from the ICH M11 template. Drug, indication, and formulation are locked from master data sources. Only the primary endpoint section is open for authoring.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="card-title">MEP-COPD-301 — MATINEE Protocol Shell</div>
+        <div class="card-subtitle">Eagle · Veeva Vault VD-88214</div>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <span class="badge b-navy">ICH M11 Step 4</span>
+        <span class="badge b-amber">Draft</span>
+      </div>
+    </div>
+    <div class="card-body" style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="field-group" style="margin-bottom: 0;">
+        <div class="field-label">§ 1 — Investigational medicinal product</div>
+        <div class="locked-field">
+          <div class="lf-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5" width="7" height="5.5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="lf-val">Mepolizumab (Nucala)</span>
+          <span style="color: var(--muted); font-size: 12px;">INN from product master</span>
+          <span class="lf-src">CMC-Digital · 3.2.P.1</span>
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom: 0;">
+        <div class="field-label">§ 2 — Indication &amp; dose</div>
+        <div class="locked-field">
+          <div class="lf-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5" width="7" height="5.5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="lf-val">COPD — Chronic Obstructive Pulmonary Disease</span>
+          <span class="lf-src">Locked</span>
+        </div>
+        <div class="locked-field">
+          <div class="lf-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5" width="7" height="5.5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="lf-val">100 mg/mL SC, every 4 weeks</span>
+          <span class="lf-src">Formulation · CMC-Digital</span>
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom: 0;">
+        <div class="field-label" style="color: var(--navy);">
+          § 4.2 — Primary endpoint
+          <span class="badge b-navy">Open for authoring</span>
+        </div>
+        <div class="open-field-wrap" style="pointer-events: none;">
+          <div class="open-field-bar">
+            <div class="open-field-bar-label">§ 4.2 · awaiting clinical team</div>
+          </div>
+          <div style="padding: 11px 14px; font-size: 12.5px; color: var(--navy); font-style: italic; opacity: .7; min-height: 44px;">
+            [ Primary endpoint definition — next step ]
+          </div>
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom: 0;">
+        <div class="field-label">§ 8 — Statistical considerations</div>
+        <div class="locked-field">
+          <div class="lf-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5" width="7" height="5.5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span>SAP reference locked — SAP-MEP-COPD-301 v1.0 · will inherit endpoint from § 4.2</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chips" style="margin-bottom: 16px;">
+    <div class="chip">ICH M11 Step 4 · Nov 2025</div>
+    <div class="chip">CMC-Digital · 3.2.P.1</div>
+    <div class="chip">Eagle · Veeva Vault</div>
+    <div class="chip">CDISC terminology enforced</div>
+  </div>
+  <div class="btn-row"><button class="btn btn-navy" onclick="goPane(1)">Open authoring workspace</button></div>
+</div>
+
+<!-- PANE 2 — AUTHOR -->
+<div class="pane" id="pane-1">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--navy);">Step 2 of 6 — Authoring</div>
+    <div class="pane-h1">Author the primary endpoint</div>
+    <div class="pane-desc">Type the primary endpoint definition. SCA validates against CDISC terminology in real time, checking that a time point and measurement instrument are specified. Submission is locked until all four rules pass.</div>
+  </div>
+  <div class="split">
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-title">§ 4.2 — Primary endpoint</div>
+            <div class="card-subtitle">MEP-COPD-301 · Eagle</div>
+          </div>
+          <span class="badge b-navy">Authoring</span>
+        </div>
+        <div class="card-body">
+          <div class="field-group" style="margin-bottom: 14px;">
+            <div class="field-label">Locked fields</div>
+            <div class="locked-field">
+              <div class="lf-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5" width="7" height="5.5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5V3.5a2 2 0 014 0V5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+              <span class="lf-val">Mepolizumab · COPD</span>
+              <span class="lf-src">Master data</span>
+            </div>
+          </div>
+          <div class="field-group" style="margin-bottom: 0;">
+            <div class="field-label">
+              Primary endpoint definition
+              <span class="field-label-mono">§ 4.2 · open</span>
+            </div>
+            <div class="open-field-wrap">
+              <div class="open-field-bar">
+                <div class="open-field-bar-label">§ 4.2 · MEP-COPD-301 · MATINEE</div>
+                <span class="chip" style="font-size: 9px; padding: 2px 7px;" id="charCount">0 chars</span>
+              </div>
+              <textarea class="field-textarea" id="endpointText" placeholder="Enter the primary endpoint definition…" oninput="onEndpointInput(this)"></textarea>
+              <div class="field-footer" style="border-color: var(--navy-bd);">
+                <span style="font-family: var(--mono); font-size: 9.5px; color: var(--faint); font-style: italic;">Suggested: "Annual rate of moderate or severe COPD exacerbations over 52 weeks, assessed per the Anthonisen criteria…"</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="notice n-navy" style="margin-bottom: 14px;">
+        <div class="notice-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#004c97" stroke-width="1.5"/><line x1="8" y1="7" x2="8" y2="11" stroke="#004c97" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="5.5" r=".75" fill="#004c97"/></svg></div>
+        <div>
+          <div class="notice-title">Governance — numbers are never AI-generated</div>
+          <div class="notice-text">The P-value 0.011 is extracted by validated parser from the statistical output file and confirmed by a regex rule. AI does not generate or modify numerical values at any stage.</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-navy" id="btn-submit" onclick="submitAuthoring()" disabled>Submit for review</button>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="position: sticky; top: 0;">
+        <div class="card-header">
+          <div class="card-title">Live validation</div>
+          <span class="badge b-muted" id="val-badge">0 of 4 rules</span>
+        </div>
+        <div class="card-body">
+          <div class="rules-grid">
+            <div class="rule-row" id="vc-len"><div class="rule-indicator"></div><div class="rule-label">Content length sufficient</div><div class="rule-result" id="vc-len-v">—</div></div>
+            <div class="rule-row" id="vc-cdisc"><div class="rule-indicator"></div><div class="rule-label">CDISC term — COPD exacerbation</div><div class="rule-result" id="vc-cdisc-v">—</div></div>
+            <div class="rule-row" id="vc-time"><div class="rule-indicator"></div><div class="rule-label">Time point specified</div><div class="rule-result" id="vc-time-v">—</div></div>
+            <div class="rule-row" id="vc-instr"><div class="rule-indicator"></div><div class="rule-label">Measurement instrument specified</div><div class="rule-result" id="vc-instr-v">—</div></div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size: 11.5px; color: var(--muted); line-height: 1.6;">
+            <div style="font-weight: 600; color: var(--sub); margin-bottom: 5px; font-size: 12px;">Reference content</div>
+            <div style="font-style: italic; color: var(--faint);">"Annual rate of moderate or severe COPD exacerbations over 52 weeks, assessed per the Anthonisen criteria and recorded in the electronic diary. Measured from randomisation to Week 52."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 3 — APPROVE -->
+<div class="pane" id="pane-2">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--navy);">Step 3 of 6 — Governance</div>
+    <div class="pane-h1">Human-in-the-loop review and approval</div>
+    <div class="pane-desc">Three independent approvals are required before the component can be promoted to the repository. Click Approve on each reviewer's card to advance. Every decision is timestamped and recorded under 21 CFR Part 11.</div>
+  </div>
+
+  <div id="ap-cards">
+    <div class="ap-card ap-current" id="ap-0">
+      <div class="ap-head">
+        <div class="ap-avatar" id="av-0">MW</div>
+        <div class="ap-info">
+          <div class="ap-role">Medical Writer</div>
+          <div class="ap-desc">Regulatory language compliance · ambiguity check · CDISC alignment</div>
+        </div>
+        <div class="ap-meta">
+          <span class="badge b-amber" id="ap-badge-0">Pending review</span>
+          <div class="ap-time" id="ap-time-0"></div>
+        </div>
+      </div>
+      <div class="ap-body" id="ap-body-0">
+        <div class="ap-review-note">Reviewing § 4.2 endpoint definition for regulatory language compliance. CDISC preferred term confirmed: <strong>COPD exacerbation</strong>. No ambiguous language detected. Anthonisen criteria correctly cited as measurement instrument.</div>
+        <div class="ap-actions">
+          <button class="btn btn-green btn-sm" onclick="approve(0)">Approve</button>
+          <button class="btn btn-ghost btn-sm" disabled>Request revision</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ap-card" id="ap-1">
+      <div class="ap-head">
+        <div class="ap-avatar" id="av-1">CL</div>
+        <div class="ap-info">
+          <div class="ap-role">Clinical Lead</div>
+          <div class="ap-desc">Scientific accuracy · completeness · clinical feasibility</div>
+        </div>
+        <div class="ap-meta">
+          <span class="badge b-muted" id="ap-badge-1">Awaiting prior gate</span>
+          <div class="ap-time" id="ap-time-1"></div>
+        </div>
+      </div>
+      <div class="ap-body" id="ap-body-1" style="display: none;">
+        <div class="ap-review-note">Endpoint definition is scientifically accurate. Time horizon of 52 weeks is consistent with the trial protocol MEP-COPD-301. Measurement methodology (Anthonisen criteria + eDiary) is appropriate for COPD exacerbation assessment.</div>
+        <div class="ap-actions">
+          <button class="btn btn-green btn-sm" onclick="approve(1)">Approve</button>
+          <button class="btn btn-ghost btn-sm" disabled>Request revision</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ap-card" id="ap-2">
+      <div class="ap-head">
+        <div class="ap-avatar" id="av-2">RA</div>
+        <div class="ap-info">
+          <div class="ap-role">Regulatory Affairs</div>
+          <div class="ap-desc">eCTD M11 alignment · CTD section mapping · 21 CFR Part 11 compliance</div>
+        </div>
+        <div class="ap-meta">
+          <span class="badge b-muted" id="ap-badge-2">Awaiting prior gate</span>
+          <div class="ap-time" id="ap-time-2"></div>
+        </div>
+      </div>
+      <div class="ap-body" id="ap-body-2" style="display: none;">
+        <div class="ap-review-note">ICH M11 § 4.2 template alignment confirmed. CTD mapping verified: M11 §4.2 → ICH E3 §6 → CTD Module 2.7.3. Component cleared for promotion to the structured component repository.</div>
+        <div class="ap-actions">
+          <button class="btn btn-green btn-sm" onclick="approve(2)">Approve</button>
+          <button class="btn btn-ghost btn-sm" disabled>Request revision</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="audit-block" style="display: none; margin-top: 16px;">
+    <div style="font-family: var(--mono); font-size: 9.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;">21 CFR Part 11 audit trail — complete</div>
+    <div class="code-block">
+<span class="cc">&lt;!-- Vault audit log · CMP-2025-PE-00412 --&gt;</span>
+<span class="ct">&lt;auditEntry</span> <span class="ca">user</span>=<span class="cv">"mw_jones@gsk.com"</span>   <span class="ca">action</span>=<span class="cv">"APPROVE"</span> <span class="ca">ts</span>=<span class="cv">"2025-03-06T14:32Z"</span> <span class="ca">role</span>=<span class="cv">"medical_writer"</span><span class="ct">/&gt;</span>
+<span class="ct">&lt;auditEntry</span> <span class="ca">user</span>=<span class="cv">"hartley_j@gsk.com"</span> <span class="ca">action</span>=<span class="cv">"APPROVE"</span> <span class="ca">ts</span>=<span class="cv">"2025-03-07T09:14Z"</span> <span class="ca">role</span>=<span class="cv">"clinical_lead"</span><span class="ct">/&gt;</span>
+<span class="ct">&lt;auditEntry</span> <span class="ca">user</span>=<span class="cv">"ra_patel@gsk.com"</span>  <span class="ca">action</span>=<span class="cv">"APPROVE"</span> <span class="ca">ts</span>=<span class="cv">"2025-03-08T11:55Z"</span> <span class="ca">role</span>=<span class="cv">"regulatory_affairs"</span><span class="ct">/&gt;</span>
+<span class="ct">&lt;componentStatus</span> <span class="ca">ref</span>=<span class="cv">"CMP-2025-PE-00412"</span> <span class="ca">status</span>=<span class="cv">"APPROVED"</span> <span class="ca">vaultDoc</span>=<span class="cv">"VD-88214"</span><span class="ct">/&gt;</span>
+    </div>
+    <div class="btn-row" style="margin-top: 14px;">
+      <button class="btn btn-navy" onclick="goPane(3)">Promote to repository</button>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 4 — COMPONENT RECORD -->
+<div class="pane" id="pane-3">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--green);">Step 4 of 6 — Component repository</div>
+    <div class="pane-h1">Component promoted to repository</div>
+    <div class="pane-desc">SCA extracts the approved endpoint from the protocol shell and stores it as a standalone, versioned component with full metadata, ICH mapping, and provenance. The record builds field by field below.</div>
+  </div>
+  <div class="comp-card">
+    <div class="comp-card-head">
+      <div>
+        <div class="comp-card-id">CMP-2025-PE-00412</div>
+        <div class="comp-card-sub">Primary endpoint definition · v1.0 · <span id="comp-status-lbl">Promoting</span></div>
+      </div>
+      <span class="badge" id="comp-head-badge" style="background:var(--amber-lt);color:var(--amber);border-color:var(--amber-bd);">Promoting</span>
+    </div>
+    <div class="comp-grid">
+      <div class="comp-cell"><div class="comp-key">Drug</div><div class="comp-val empty" id="cf-drug">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Indication</div><div class="comp-val empty" id="cf-ind">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Study</div><div class="comp-val empty" id="cf-study">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Version</div><div class="comp-val empty" id="cf-ver">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Provenance</div><div class="comp-val empty" id="cf-prov">—</div></div>
+      <div class="comp-cell"><div class="comp-key">ICH Mapping</div><div class="comp-val empty" id="cf-ich">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Format</div><div class="comp-val empty" id="cf-fmt">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Used in</div><div class="comp-val empty" id="cf-used">—</div></div>
+      <div class="comp-cell"><div class="comp-key">Status</div><div class="comp-val empty" id="cf-stat">—</div></div>
+    </div>
+    <div class="comp-content-area">
+      <div class="comp-content-key">Approved content — source of truth</div>
+      <div class="comp-content-text empty" id="cf-content">Awaiting promotion…</div>
+    </div>
+  </div>
+  <div id="comp-promo-btn" style="display: flex; justify-content: flex-end; margin-top: 14px;">
+    <button class="btn btn-green" onclick="promoteComponent()">Promote component</button>
+  </div>
+  <div id="comp-next-btn" style="display: none; justify-content: flex-end; margin-top: 14px;">
+    <button class="btn btn-navy" onclick="goPane(4)">View cross-domain reuse</button>
+  </div>
+</div>
+
+<!-- PANE 5 — REUSE -->
+<div class="pane" id="pane-4">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--navy);">Step 5 of 6 — Cross-domain reuse</div>
+    <div class="pane-h1">One component — five documents — zero re-authoring</div>
+    <div class="pane-desc">CMP-2025-PE-00412 is assembled directly into every downstream document that references the primary endpoint. Domain authors work only on their domain-specific layer. The endpoint definition is locked at every point of reuse.</div>
+  </div>
+
+  <div class="reuse-card">
+    <div class="reuse-head">
+      <div class="reuse-doc-name">Statistical Analysis Plan (SAP)</div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span class="reuse-section">§ 3.1 Primary Analysis</span><span class="badge b-green">Auto-assembled</span></div>
+    </div>
+    <div class="reuse-body">
+      Endpoint: <span class="reuse-hi">"Annual rate of moderate or severe COPD exacerbations over 52 weeks…"</span>
+      <div class="reuse-lock"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4" width="6" height="4.5" rx=".8" stroke="#94a3b8" stroke-width="1.1"/><path d="M3.5 4V3a2.5 2.5 0 015 0v1" stroke="#94a3b8" stroke-width="1.1" stroke-linecap="round"/></svg>CMP-2025-PE-00412 v1.0 locked. Statistician authors analysis method only.</div>
+    </div>
+  </div>
+  <div class="reuse-card">
+    <div class="reuse-head">
+      <div class="reuse-doc-name">Clinical Study Report (CSR)</div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span class="reuse-section">§ 6 — Study Objectives &amp; Endpoints</span><span class="badge b-green">Auto-assembled</span></div>
+    </div>
+    <div class="reuse-body">
+      Endpoint assembled from CMP-2025-PE-00412. P-value <span class="reuse-hi">0.011</span> linked to statistical output — not re-typed.
+      <div class="reuse-lock"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4" width="6" height="4.5" rx=".8" stroke="#94a3b8" stroke-width="1.1"/><path d="M3.5 4V3a2.5 2.5 0 015 0v1" stroke="#94a3b8" stroke-width="1.1" stroke-linecap="round"/></svg>Medical writer authors narrative sections only.</div>
+    </div>
+  </div>
+  <div class="reuse-card">
+    <div class="reuse-head">
+      <div class="reuse-doc-name">Module 2.7.3 — Summary of Clinical Efficacy</div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span class="reuse-section">§ 2.7.3.3</span><span class="badge b-green">Auto-assembled</span></div>
+    </div>
+    <div class="reuse-body">
+      P-value propagated as <span class="reuse-hi">P = 0.011</span>. The previous approximation "P &lt; 0.05" is structurally impossible when assembled from the component.
+      <div class="reuse-lock"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4" width="6" height="4.5" rx=".8" stroke="#94a3b8" stroke-width="1.1"/><path d="M3.5 4V3a2.5 2.5 0 015 0v1" stroke="#94a3b8" stroke-width="1.1" stroke-linecap="round"/></svg>Numerical values locked. No manual entry.</div>
+    </div>
+  </div>
+  <div class="reuse-card">
+    <div class="reuse-head">
+      <div class="reuse-doc-name">Module 2.7.4 — Summary of Clinical Safety</div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span class="reuse-section">§ 2.7.4.3</span><span class="badge b-green">Auto-assembled</span></div>
+    </div>
+    <div class="reuse-body">
+      P-value propagated as <span class="reuse-hi">P = 0.011</span>. Rounding to "0.01" is structurally prevented.
+      <div class="reuse-lock"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4" width="6" height="4.5" rx=".8" stroke="#94a3b8" stroke-width="1.1"/><path d="M3.5 4V3a2.5 2.5 0 015 0v1" stroke="#94a3b8" stroke-width="1.1" stroke-linecap="round"/></svg>Rounding rules enforced at component level.</div>
+    </div>
+  </div>
+  <div class="reuse-card">
+    <div class="reuse-head">
+      <div class="reuse-doc-name">FDA Label — Section 14 (Clinical Studies)</div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span class="reuse-section">§ 14</span><span class="badge b-green">Auto-assembled</span></div>
+    </div>
+    <div class="reuse-body">
+      Label content assembled from CMP-2025-PE-00412. Consistent with all preceding submission documents.
+      <div class="reuse-lock"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2" y="4" width="6" height="4.5" rx=".8" stroke="#94a3b8" stroke-width="1.1"/><path d="M3.5 4V3a2.5 2.5 0 015 0v1" stroke="#94a3b8" stroke-width="1.1" stroke-linecap="round"/></svg>Labelling team reviews indication language only.</div>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top: 6px;"><button class="btn btn-navy" onclick="goPane(5)">Run consistency check</button></div>
+</div>
+
+<!-- PANE 6 — CONSISTENCY -->
+<div class="pane" id="pane-5">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--navy);">Step 6 of 6 — Consistency validation</div>
+    <div class="pane-h1">Automated pre-submission cross-document check</div>
+    <div class="pane-desc">Before Sonata assembles the eCTD package, SCA runs a semantic cross-check across all documents. Previous inconsistencies are not merely detected — they are structurally prevented by the component model.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Consistency check — 2025-09-14 · pre-submission validation</div>
+      <span class="badge b-green">5 of 5 matched</span>
+    </div>
+    <div class="card-body" style="padding: 12px 8px; display: flex; flex-direction: column; gap: 0;">
+      <div class="con-row"><div class="con-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="con-doc">CSR § 11.4.1</div><div class="con-val">P = 0.011</div><div class="con-st">Match · v1.0</div></div>
+      <div class="con-row"><div class="con-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="con-doc">Module 2.7.4 § 2.7.4.3</div><div class="con-val">P = 0.011</div><div class="con-st">Match · v1.0</div></div>
+      <div class="con-row"><div class="con-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="con-doc">ISS Table 14.3</div><div class="con-val">P = 0.011</div><div class="con-st">Match · v1.0</div></div>
+      <div class="con-row"><div class="con-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="con-doc">Module 2.7.3 § 2.7.3.3</div><div class="con-val">P = 0.011</div><div class="con-st">Match · v1.0 — previously P &lt; 0.05</div></div>
+      <div class="con-row" style="margin-bottom: 0;"><div class="con-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="con-doc">FDA Label Section 14</div><div class="con-val">P = 0.011</div><div class="con-st">Match · v1.0</div></div>
+    </div>
+  </div>
+  <div class="notice n-green">
+    <div class="notice-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#16a34a" stroke-width="1.5"/><path d="M5 8l2.5 2.5L11 5.5" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div>
+      <div class="notice-title">Validation passed — 5 of 5 documents consistent</div>
+      <div class="notice-text"><strong>0 discrepancies.</strong> CMP-2025-PE-00412 v1.0 verified across all submission documents. Cleared for Sonata assembly and eCTD 4.0 packaging.</div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-navy" onclick="goPane(6)">View summary</button></div>
+</div>
+
+<!-- PANE 7 — SUMMARY -->
+<div class="pane" id="pane-6">
+  <div class="pane-top">
+    <div class="pane-step" style="color: var(--teal);">Summary</div>
+    <div class="pane-h1">From re-authoring to a single source of truth</div>
+    <div class="pane-desc">The MATINEE primary endpoint was authored once, approved once, and assembled five times — identically, traceably, without a single manual re-entry. This is what template-first SCA delivers at scale across the Nucala COPD programme.</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num" style="color: var(--navy);">1×</div><div class="stat-label">Authored &amp; approved</div></div>
+    <div class="stat-card"><div class="stat-num" style="color: var(--teal);">5×</div><div class="stat-label">Documents assembled</div></div>
+    <div class="stat-card"><div class="stat-num" style="color: var(--green);">0</div><div class="stat-label">Inconsistencies</div></div>
+  </div>
+  <div class="compare-grid" style="margin-bottom: 16px;">
+    <div class="compare-card">
+      <div class="compare-head" style="background: var(--red-lt); border-bottom-color: var(--red-bd);">
+        <span class="badge b-red">Without SCA</span>
+        <span style="font-size: 11.5px; color: var(--muted);">Three teams · three interpretations</span>
+      </div>
+      <div class="compare-body">
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#b91c1c" stroke-width="1.3"/><path d="M5 5l4 4M9 5l-4 4" stroke="#b91c1c" stroke-width="1.3" stroke-linecap="round"/></svg><span>P-value rounded to 0.01 in Module 2.7.4</span></div>
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#b91c1c" stroke-width="1.3"/><path d="M5 5l4 4M9 5l-4 4" stroke="#b91c1c" stroke-width="1.3" stroke-linecap="round"/></svg><span>P-value approximated as &lt; 0.05 in Module 2.7.3</span></div>
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#b91c1c" stroke-width="1.3"/><path d="M5 5l4 4M9 5l-4 4" stroke="#b91c1c" stroke-width="1.3" stroke-linecap="round"/></svg><span>Inconsistency triggers FDA Information Request</span></div>
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#b91c1c" stroke-width="1.3"/><path d="M5 5l4 4M9 5l-4 4" stroke="#b91c1c" stroke-width="1.3" stroke-linecap="round"/></svg><span>Median 435-day delay post-rejection</span></div>
+      </div>
+    </div>
+    <div class="compare-card" style="border-color: var(--green-bd);">
+      <div class="compare-head" style="background: var(--green-lt); border-bottom-color: var(--green-bd);">
+        <span class="badge b-green">With SCA</span>
+        <span style="font-size: 11.5px; color: var(--muted);">One component · zero drift</span>
+      </div>
+      <div class="compare-body">
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>P = 0.011 in all five documents — identical</span></div>
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Rounding structurally prevented at component level</span></div>
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Full audit trail from source to submission</span></div>
+        <div class="compare-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#16a34a" stroke-width="1.3"/><path d="M4.5 7l2 2 3-3" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Cleared for eCTD 4.0 packaging first time</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="notice n-teal">
+    <div class="notice-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v5l3 2" stroke="#0d9488" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="6" stroke="#0d9488" stroke-width="1.5"/></svg></div>
+    <div>
+      <div class="notice-title">Next step — Nucala COPD submission pilot</div>
+      <div class="notice-text">Apply this lifecycle across the full Nucala COPD submission: all primary and secondary endpoints, safety narratives, and cross-domain components spanning Eagle, CMC-Digital, and Sonata — with the Neo4j knowledge graph as the lineage and reuse layer.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /workspace -->
+</div><!-- /body -->
+</div><!-- /app -->
+
+<script>
+let cur = 0;
+let approvalsDone = 0;
+let authoredText = '';
+let promoted = false;
+
+const TIMES = ['2025-03-06 · 14:32 GMT','2025-03-07 · 09:14 GMT','2025-03-08 · 11:55 GMT'];
+const PCT   = [0,12,25,50,62,75,88];
+const STATUS= ['Shell open','Authoring','In review','Promoted','Reusing','Validated','Complete'];
+
+function goPane(n) {
+  document.getElementById('pane-'+cur).classList.remove('active');
+  cur = n;
+  const to = document.getElementById('pane-'+cur);
+  to.scrollTop = 0;
+  to.classList.add('active','entering');
+  setTimeout(()=>to.classList.remove('entering'),250);
+
+  for(let i=0;i<7;i++){
+    const nav=document.getElementById('nav-'+i);
+    const dot=document.getElementById('ndot-'+i);
+    nav.classList.remove('active','done');
+    dot.className='nav-dot';
+    if(i===cur){ nav.classList.add('active'); dot.classList.add('live'); }
+    else if(i<cur){ nav.classList.add('done'); dot.classList.add('done'); }
+    else{ dot.classList.add('idle'); }
+  }
+
+  document.getElementById('sb-fill').style.width = PCT[n]+'%';
+  document.getElementById('sb-pct-label').textContent = PCT[n]+'%';
+  document.getElementById('sb-status').textContent = STATUS[n];
+
+  if(n===4 && !promoted) resetComp();
+}
+
+// ── VALIDATION ──
+const RULES = {
+  len:   t=>t.trim().length>40,
+  cdisc: t=>/exacerbation/i.test(t),
+  time:  t=>/\d+\s*week|52/i.test(t),
+  instr: t=>/anthonisen|diary|criteria|instrument/i.test(t)
+};
+const RULE_VALS = {
+  len:   t=>t.trim().length+' chars',
+  cdisc: ()=>'Detected',
+  time:  ()=>'Detected',
+  instr: ()=>'Detected'
+};
+
+function onEndpointInput(el){
+  authoredText = el.value;
+  document.getElementById('charCount').textContent = authoredText.length+' chars';
+  let passed=0;
+  Object.keys(RULES).forEach(k=>{
+    const ok=RULES[k](authoredText);
+    const row=document.getElementById('vc-'+k);
+    const val=document.getElementById('vc-'+k+'-v');
+    row.className='rule-row '+(authoredText.length===0?'':'ok'===k?'pass':ok?'pass':'fail');
+    row.className='rule-row '+(authoredText.length===0?'':ok?'pass':'fail');
+    val.textContent=authoredText.length===0?'—':(ok?RULE_VALS[k](authoredText):'Not found');
+    if(ok) passed++;
+  });
+  const b=document.getElementById('val-badge');
+  b.textContent=passed+' of 4 rules';
+  b.className='badge '+(passed===4?'b-green':passed>0?'b-amber':'b-muted');
+  document.getElementById('btn-submit').disabled=passed<4;
+}
+
+function submitAuthoring(){ goPane(2); }
+
+// ── APPROVALS ──
+function approve(i){
+  const card=document.getElementById('ap-'+i);
+  card.classList.remove('ap-current');
+  card.classList.add('ap-approved');
+  document.getElementById('ap-badge-'+i).className='badge b-green';
+  document.getElementById('ap-badge-'+i).textContent='Approved';
+  document.getElementById('ap-time-'+i).textContent=TIMES[i];
+  document.getElementById('av-'+i).innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 7l3 3 4-5" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  document.getElementById('ap-body-'+i).style.display='none';
+  approvalsDone++;
+  if(i<2){
+    const nx=document.getElementById('ap-'+(i+1));
+    nx.classList.add('ap-current');
+    document.getElementById('ap-badge-'+(i+1)).className='badge b-amber';
+    document.getElementById('ap-badge-'+(i+1)).textContent='Pending review';
+    document.getElementById('ap-body-'+(i+1)).style.display='block';
+  }
+  if(approvalsDone===3) document.getElementById('audit-block').style.display='block';
+  const pcts=[50,55,60];
+  document.getElementById('sb-fill').style.width=pcts[i]+'%';
+  document.getElementById('sb-pct-label').textContent=pcts[i]+'%';
+}
+
+// ── COMPONENT PROMOTION ──
+const FIELDS=[
+  {id:'cf-drug', val:'Mepolizumab (Nucala)',      d:180},
+  {id:'cf-ind',  val:'COPD',                      d:380},
+  {id:'cf-study',val:'MEP-COPD-301 (MATINEE)',    d:580},
+  {id:'cf-ver',  val:'1.0 — Approved',            d:780},
+  {id:'cf-prov', val:'Eagle · VD-88214 · § 4.2',  d:980},
+  {id:'cf-ich',  val:'M11 §4.2 → E3 §6 → M4-2.7.3', d:1180},
+  {id:'cf-fmt',  val:'XML (eCTD 4.0) + JSON (FHIR)', d:1380},
+  {id:'cf-used', val:'1 document (originating)',  d:1580},
+  {id:'cf-stat', val:'Active · Reusable',          d:1780, green:true},
+];
+
+function resetComp(){
+  FIELDS.forEach(f=>{
+    const el=document.getElementById(f.id);
+    el.textContent='—'; el.className='comp-val empty'; el.style.color='';
+  });
+  const ct=document.getElementById('cf-content');
+  ct.textContent='Awaiting promotion…'; ct.className='comp-content-text empty';
+  document.getElementById('comp-status-lbl').textContent='Promoting';
+  const b=document.getElementById('comp-head-badge');
+  b.className='badge'; b.style.cssText='background:var(--amber-lt);color:var(--amber);border-color:var(--amber-bd);'; b.textContent='Promoting';
+  document.getElementById('comp-promo-btn').style.display='flex';
+  document.getElementById('comp-next-btn').style.display='none';
+}
+
+function promoteComponent(){
+  document.getElementById('comp-promo-btn').style.display='none';
+  promoted=true;
+  FIELDS.forEach(f=>{
+    setTimeout(()=>{
+      const el=document.getElementById(f.id);
+      el.textContent=f.val; el.className='comp-val filled';
+      if(f.green) el.style.color='var(--green)';
+      const cell=el.closest('.comp-cell');
+      cell.classList.add('flash');
+      setTimeout(()=>cell.classList.remove('flash'),600);
+    },f.d);
+  });
+  setTimeout(()=>{
+    const ct=document.getElementById('cf-content');
+    const txt=authoredText.trim()||'"Annual rate of moderate or severe COPD exacerbations over 52 weeks, assessed per the Anthonisen criteria and recorded in the electronic diary. Measured from randomisation to Week 52."';
+    ct.textContent=txt; ct.className='comp-content-text';
+  },2000);
+  setTimeout(()=>{
+    document.getElementById('comp-status-lbl').textContent='Approved';
+    const b=document.getElementById('comp-head-badge');
+    b.className='badge b-green'; b.style.cssText=''; b.textContent='Promoted to repository';
+    document.getElementById('comp-next-btn').style.display='flex';
+    document.getElementById('sb-fill').style.width='75%';
+    document.getElementById('sb-pct-label').textContent='75%';
+  },2300);
+}
+
+goPane(0);
+</script>
+</body>
+</html>
